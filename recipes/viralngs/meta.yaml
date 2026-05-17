@@ -1,0 +1,78 @@
+{% set name = "viralngs" %}
+{% set version = "3.0.12" %}
+{% set sha256 = "0f39fb4b70d29e2b80b411866ff4de1f5c0f4c4eb591d49b3889a367b67fd685" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/broadinstitute/viral-ngs/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  number: 0
+  script_env:
+    - SETUPTOOLS_SCM_PRETEND_VERSION={{ version }}
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python >=3.10
+    - pip >=24
+    - setuptools >=61
+    - setuptools-scm >=8
+
+  run:
+    - python >=3.10,<3.13
+
+    # Python dependencies
+    - arrow >=0.12.1
+    - biopython >=1.72
+    - jinja2 >=2.11.3
+    - lz4 >=2.2.1
+    - matplotlib-base >=3.7
+    - pandas >=2.0.0
+    - psutil >=6.1.0
+    - pybedtools >=0.7.10
+    - pysam >=0.23.0
+    - pyyaml >=6.0
+    - scipy >=1.10.0
+    - seaborn >=0.12.0
+    - zstandard >=0.23.0
+    - numpy >=1.26
+
+    # External bioinformatics tools used by viral-ngs
+    - bwa >=0.7.17
+    - bowtie2 >=2.5.0
+    - samtools >=1.18
+    - blast >=2.15.0
+    - kraken2 >=2.1.3
+    - spades >=3.15
+    - mafft >=7.520
+
+    # Additional runtime utilities commonly required
+    - requests >=2.31
+    - tqdm >=4.66
+    - xxhash >=0.8.2
+
+test:
+  imports:
+    - viral_ngs
+
+  requires:
+    - pytest >=7
+
+  commands:
+    - python -c "import viral_ngs"
+
+about:
+  home: https://github.com/broadinstitute/viral-ngs
+  license: MIT
+  license_file: LICENSE
+  summary: "Consolidated tools for viral NGS data analysis"
+
+extra:
+  recipe-maintainers:
+    - bio-informatician
